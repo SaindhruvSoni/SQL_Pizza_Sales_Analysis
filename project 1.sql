@@ -1,33 +1,28 @@
 
-Q1--Retrieve the total number of orders placed
+/* Q1--Retrieve the total number of orders placed */
 
 select count(order_id) as count_of_orders from orders
+	
 
-Q2--Calculate total revenue generated generated from pizza sales
+/* Q2--Calculate total revenue generated generated from pizza sales */
 
 select round(sum(p1.price*od.quantity),2)
 	as Revenue from
 	pizzas as p1
 	join order_details as od
 on p1.pizza_id=od.pizza_id
+	
 
-Q3--Idetify the highest priced pizza
+/* Q3--Idetify the highest priced pizza */
 
 select pt.name,p1.price
 	from pizza_types as pt 
 	join pizzas as p1 
 	on p1.pizza_type_id=pt.pizza_type_id 
 where price=(select max(price) from pizzas) 
+	
 
-
-select top 1 pt.name,p1.price
-	from pizza_types as pt 
-	join pizzas as p1 
-	on p1.pizza_type_id=pt.pizza_type_id
-order by price desc
-
-
---Identify the most common pizza size ordered
+/* Q4--Identify the most common pizza size ordered */
 
 select p1.size,count(quantity) as pizza_count
 	from pizzas as p1
@@ -36,8 +31,7 @@ select p1.size,count(quantity) as pizza_count
 group by p1.size
 
 
---List top 5 most ordered pizza types along with their quantities
-
+/* Q5--List top 5 most ordered pizza types along with their quantities */
 
 select top 5 pt.name,Sum(od.quantity) as pizza_count
 	from pizza_types as pt
@@ -48,10 +42,8 @@ select top 5 pt.name,Sum(od.quantity) as pizza_count
 group by name
 order by pizza_count desc
 
----------------
---Intermediate |
----------------
---Join the necessary tables to find the total quantities of each pizza ordered 
+
+/* Q6--Join the necessary tables to find the total quantities of each pizza ordered */
 
 select pt.category,sum(quantity) as Quantity
 	from pizza_types as pt
@@ -63,17 +55,17 @@ select pt.category,sum(quantity) as Quantity
  order by Quantity desc
 
 
- --Determine the distribution of orders by hours of the day
+/* Q7--Determine the distribution of orders by hours of the day */
 
 select datepart(hour,time) as Daily_Hour,count(order_id) as Order_Count from orders group by datepart(hour,time)
 
 
---Join relevant tables to find the category wise distribution of pizzas
+/* Q8--Join relevant tables to find the category wise distribution of pizzas */
 
 select category,count(name) as pizza_count from pizza_types group by category
 
 
---Group the orders by the date and calculate the average number of pizzas ordered per day
+/* Q9--Group the orders by the date and calculate the average number of pizzas ordered per day */
 
 with Pizza_avg as (
 select date,sum(od.quantity) as total
@@ -85,7 +77,7 @@ group by date
 select avg(total) as Average from Pizza_avg
 
 
---Determine the top 3 most ordered pizza types based on reveue 
+/* Q10--Determine the top 3 most ordered pizza types based on reveue */
 
 select top 3 pt.name,round(sum(p1.price*od.quantity),2) as Revenue
 	from pizza_types as pt
@@ -96,11 +88,8 @@ select top 3 pt.name,round(sum(p1.price*od.quantity),2) as Revenue
 	group by name 
 order by Revenue desc
 
------------
---HARD    |
------------
 
---Calculate the percentage contribution of each pizza type to total revenue
+/* Q11--Calculate the percentage contribution of each pizza type to total revenue */
 
 with auto as (
 select pt.category,round(sum(p1.price*od.quantity),0) as Revenue
@@ -114,7 +103,7 @@ group by pt.category
 select *,round(revenue/817863*100,2) as total_percent from auto order by total_percent desc
 
 
---Analyze the cumulative revenue generated over time
+/* Q12--Analyze the cumulative revenue generated over time */
 
 select date,Revenue,sum(revenue)
 over(order by date) as Revenue from
@@ -128,7 +117,7 @@ group by o1.date
 ) as orders
 
 
---Determine the top 3 most ordered pizza type based on revenue for each pizza category
+/* Q13--Determine the top 3 most ordered pizza type based on revenue for each pizza category */
 
 select name,category,Revenue,rank() over (partition by category order by revenue) as Ranking from
 (select pt.name,pt.category,round(sum(p1.price*od.quantity),2) as Revenue 
