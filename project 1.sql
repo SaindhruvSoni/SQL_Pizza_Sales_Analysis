@@ -4,7 +4,7 @@
 select count(order_id) as count_of_orders from orders
 	
 
-/* Q2--Calculate total revenue generated generated from pizza sales */
+/* Q2--Calculate total revenue generated from pizza sales */
 
 select round(sum(p1.price*od.quantity),2)
 	as Revenue from
@@ -13,7 +13,7 @@ select round(sum(p1.price*od.quantity),2)
 on p1.pizza_id=od.pizza_id
 	
 
-/* Q3--Idetify the highest priced pizza */
+/* Q3--Identify the highest priced pizza */
 
 select pt.name,p1.price
 	from pizza_types as pt 
@@ -77,7 +77,7 @@ group by date
 select avg(total) as Average from Pizza_avg
 
 
-/* Q10--Determine the top 3 most ordered pizza types based on reveue */
+/* Q10--Determine the top 3 most ordered pizza types based on revenue */
 
 select top 3 pt.name,round(sum(p1.price*od.quantity),2) as Revenue
 	from pizza_types as pt
@@ -103,7 +103,7 @@ group by pt.category
 select *,round(revenue/817863*100,2) as total_percent from auto order by total_percent desc
 
 
-/* Q12--Analyze the cumulative revenue generated over time */
+/* Q12--Analyse the cumulative revenue generated over time */
 
 select date,Revenue,sum(revenue)
 over(order by date) as Revenue from
